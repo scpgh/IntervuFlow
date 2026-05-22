@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-text-main: #0f172a;       /* Deep slate primary text for light mode */
+    --color-text-muted: #4b5563;      /* Warm grey secondary text for light mode */
+    --color-border: rgba(0, 0, 0, 0.06); /* Ultra-subtle border for light mode */
+    --color-border-hover: rgba(0, 0, 0, 0.12);
+    --color-bg-card: rgba(255, 255, 255, 0.95); /* Clean white card fill */
+  }
+
+  html.dark {
+    --color-text-main: #e8e8e8;       /* Soft off-white primary text for dark mode */
+    --color-text-muted: #7a7a7a;      /* Muted neutral secondary text for dark mode */
+    --color-border: rgba(255, 255, 255, 0.04); /* Ultra-subtle translucent border */
+    --color-border-hover: rgba(255, 255, 255, 0.08);
+    --color-bg-card: rgba(12, 12, 14, 0.8); /* Near-black glass card fill */
+  }
+
+  body {
+    @apply transition-colors duration-300 antialiased;
+    background-color: #0a0a0a;
+    background-image:
+      radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at top left, rgba(74, 124, 92, 0.06) 0%, transparent 40%);
+    background-size: 24px 24px, 100% 100%;
+    background-attachment: fixed;
+  }
+
+  html.dark body {
+    background-color: #0a0a0a;
+    background-image:
+      radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at top left, rgba(74, 124, 92, 0.06) 0%, transparent 40%);
+    background-size: 24px 24px, 100% 100%;
+  }
+
+  html:not(.dark) body {
+    background-color: #fafafa;
+    background-image: none;
+  }
+
+  /* Elegant serif display typography on headings */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.02em !important;
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  /* ─── Scrollbars ─── */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  html.dark ::-webkit-scrollbar-thumb {
+    background: rgba(74, 124, 92, 0.2);
+    border-radius: 4px;
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(74, 124, 92, 0.35);
+  }
+
+  html:not(.dark) ::-webkit-scrollbar-thumb {
+    background: rgba(74, 124, 92, 0.15);
+    border-radius: 4px;
+  }
+  html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+    background: rgba(74, 124, 92, 0.3);
+  }
+
+  /* ─── Glass Cards ─── */
+  .glass-card {
+    @apply transition-all duration-300;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  html.dark .glass-card {
+    background: rgba(12, 12, 14, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
+  }
+
+  html:not(.dark) .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.04),
+                inset 0 1px 2px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  html.dark .glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* ─── Glass Card Interactive ─── */
+  .glass-card-interactive {
+    @apply transition-all duration-300 ease-in-out relative overflow-hidden;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  html.dark .glass-card-interactive {
+    background: rgba(12, 12, 14, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
+  }
+
+  html.dark .glass-card-interactive:hover {
+    border-color: rgba(74, 124, 92, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -8px rgba(74, 124, 92, 0.15),
+                0 0 12px 0 rgba(74, 124, 92, 0.08),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  html:not(.dark) .glass-card-interactive {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.04),
+                inset 0 1px 2px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  html:not(.dark) .glass-card-interactive:hover {
+    border-color: rgba(74, 124, 92, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -8px rgba(74, 124, 92, 0.08),
+                0 0 8px 0 rgba(74, 124, 92, 0.04);
+  }
+
+  /* ─── Glass Inputs ─── */
+  .glass-input {
+    @apply transition-all duration-200 w-full;
+  }
+
+  html.dark .glass-input {
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #e8e8e8;
+  }
+
+  html.dark .glass-input:focus {
+    outline: none;
+    border-color: rgba(74, 124, 92, 0.4);
+    box-shadow: 0 0 10px rgba(74, 124, 92, 0.15);
+    background: rgba(10, 10, 10, 0.8);
+  }
+
+  html:not(.dark) .glass-input {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #0f172a;
+  }
+
+  html:not(.dark) .glass-input:focus {
+    outline: none;
+    border-color: rgba(74, 124, 92, 0.4);
+    box-shadow: 0 0 8px rgba(74, 124, 92, 0.1);
+    background: #ffffff;
+  }
+
+  /* ─── Glow Buttons ─── */
+  .glow-btn-primary {
+    background: linear-gradient(135deg, #4a7c5c 0%, #3d6b50 100%);
+    box-shadow: 0 4px 12px rgba(74, 124, 92, 0.2);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .glow-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(74, 124, 92, 0.3);
+    filter: brightness(1.08);
+  }
+
+  .glow-btn-secondary {
+    background: linear-gradient(135deg, #5a9e6f 0%, #4a7c5c 100%);
+    box-shadow: 0 4px 12px rgba(90, 158, 111, 0.18);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .glow-btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(90, 158, 111, 0.28);
+    filter: brightness(1.08);
+  }
+
+  /* ─── Utility: Dot Grid Overlay ─── */
+  .dot-grid-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: 0;
+  }
+
+  /* ─── Utility: Sage Gradient Text ─── */
+  .text-gradient-sage {
+    background: linear-gradient(135deg, #4a7c5c 0%, #5a9e6f 50%, #6bb380 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ─── Utility: Card Shine Effect ─── */
+  .card-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.03) 45%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(255, 255, 255, 0.03) 55%,
+      transparent 100%
+    );
+    transition: left 0.6s ease-in-out;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .card-shine:hover::before {
+    left: 120%;
+  }
+}
