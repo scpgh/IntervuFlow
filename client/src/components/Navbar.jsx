@@ -35,9 +35,11 @@ export default function Navbar() {
         
         {/* Brand Identity */}
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-brand-primary to-brand-secondary flex items-center justify-center shadow-glow-primary group-hover:scale-105 transition-all">
-            <Award className="h-5 w-5 text-white" />
-          </div>
+          <img 
+            src="/favicon.png" 
+            alt="IntervuFlow Logo" 
+            className="h-9 w-9 object-contain group-hover:scale-105 transition-all"
+          />
           <span className="text-xl font-extrabold font-display tracking-tight text-brand-textMain">
             Intervu<span className="text-brand-primary">Flow</span>
           </span>
