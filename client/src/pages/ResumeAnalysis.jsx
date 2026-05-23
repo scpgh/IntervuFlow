@@ -518,6 +518,67 @@ export default function ResumeAnalysis() {
               </div>
             </div>
 
+            {/* ATS Metric Breakdown Card */}
+            {analysisResult.breakdown && (
+              <div className="glass-card p-6 rounded-2xl border border-brand-border flex flex-col gap-5 animate-slide-up">
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-brand-textMuted flex items-center gap-2 pb-2.5 border-b border-brand-border">
+                  <Sparkles className="h-4.5 w-4.5 text-brand-primary animate-pulse" />
+                  <span>ATS Performance Breakdown</span>
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {[
+                    { 
+                      label: 'Role Keywords Density', 
+                      value: analysisResult.breakdown.keywords, 
+                      icon: FileText, 
+                      color: 'bg-brand-primary', 
+                      glow: 'shadow-[0_0_10px_rgba(74,124,92,0.3)]' 
+                    },
+                    { 
+                      label: 'STAR Compliant Impact', 
+                      value: analysisResult.breakdown.impact, 
+                      icon: Star, 
+                      color: 'bg-brand-secondary', 
+                      glow: 'shadow-[0_0_10px_rgba(90,158,111,0.3)]' 
+                    },
+                    { 
+                      label: 'Grammar, Style & Tone', 
+                      value: analysisResult.breakdown.style, 
+                      icon: Award, 
+                      color: 'bg-indigo-500', 
+                      glow: 'shadow-[0_0_10px_rgba(99,102,241,0.3)]' 
+                    },
+                    { 
+                      label: 'Structure & Section Coverage', 
+                      value: analysisResult.breakdown.structure, 
+                      icon: CheckCircle, 
+                      color: 'bg-amber-500', 
+                      glow: 'shadow-[0_0_10px_rgba(245,158,11,0.3)]' 
+                    }
+                  ].map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={idx} className="flex flex-col gap-1.5">
+                        <div className="flex justify-between items-center text-[11px] font-bold text-brand-textMuted">
+                          <div className="flex items-center gap-1.5">
+                            <Icon className="h-3.5 w-3.5 text-brand-textMuted" />
+                            <span>{item.label}</span>
+                          </div>
+                          <span className="text-brand-textMain font-mono font-black">{item.value}%</span>
+                        </div>
+                        <div className="h-2 w-full bg-brand-border/20 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${item.color} ${item.glow} rounded-full transition-all duration-1000 ease-out`}
+                            style={{ width: `${item.value}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Summary card */}
             <div className="glass-card p-6 rounded-2xl border border-brand-border">
               <h3 className="text-sm font-extrabold text-brand-textMain mb-3">AI Executive Review</h3>

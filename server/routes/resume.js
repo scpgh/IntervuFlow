@@ -82,6 +82,7 @@ router.post('/analyze', verifyAuthToken, async (req, res) => {
       missingKeywords: analysis.missingKeywords || [],
       starCalibration: analysis.starCalibration || '',
       recommendedQuestions: analysis.recommendedQuestions || [],
+      breakdown: analysis.breakdown || null,
       createdAt: new Date().toISOString()
     };
 

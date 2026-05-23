@@ -942,19 +942,27 @@ export async function analyzeResume(resumeText, domain) {
   if (aiModel) {
     try {
       const prompt = `Analyze the following resume text tailored to a target domain of: "${domain}".
-      Evaluate its strength for this role. You MUST return ONLY a valid JSON object with the following exact keys:
+      Evaluate its strength for this role in extremely high detail, checking for basic English grammar, capitalization, spelling, mixed past/present tenses, uncapitalized technical terms (e.g. "javascript" instead of "JavaScript"), sentence clarity, run-on sentences, bullet structures, and advanced ATS constraints like metric-based accomplishments in STAR format, weak clichés ("responsible for", "assisted with", "team player") vs powerful engineering action verbs ("Spearheaded", "Optimized", "Architected").
+
+      You MUST return ONLY a valid JSON object with the following exact keys:
       {
-        "score": <a number 0 to 100 based on metrics, achievements, STAR format, and keyword matching>,
+        "score": <a number 0 to 100 calculated EXACTLY as the weighted average of the breakdown scores: structure * 0.15 + impact * 0.30 + keywords * 0.35 + style * 0.20>,
         "summary": "<a 2-3 sentence high-level summary of the candidate's resume strength and key growth areas>",
         "strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
-        "improvements": ["<actionable improvement 1>", "<actionable improvement 2>", "<actionable improvement 3>"],
+        "improvements": ["<actionable, granular improvement suggestion 1>", "<actionable, granular improvement suggestion 2>", "<actionable, granular improvement suggestion 3>", "<actionable, granular improvement suggestion 4>"],
         "missingKeywords": ["<missing keyword 1>", "<missing keyword 2>", "<missing keyword 3>", "<missing keyword 4>", "<missing keyword 5>"],
         "starCalibration": "<a paragraph analyzing how well the bullet points incorporate the STAR (Situation, Task, Action, Result) method with quantitative results>",
         "recommendedQuestions": [
           { "question": "<recommended practice question 1>", "domain": "${domain}", "difficulty": "Medium" },
           { "question": "<recommended practice question 2>", "domain": "${domain}", "difficulty": "Medium" },
           { "question": "<recommended practice question 3>", "domain": "${domain}", "difficulty": "Medium" }
-        ]
+        ],
+        "breakdown": {
+          "structure": <a number 0 to 100 representing section coverage and formatting quality>,
+          "impact": <a number 0 to 100 representing the strength of STAR method quantification and metrics density>,
+          "keywords": <a number 0 to 100 representing the density of domain-specific tools/skills matches>,
+          "style": <a number 0 to 100 representing grammar tenses consistency, uncapitalized term corrections, cliché avoidance, and action verbs strength>
+        }
       }
       Do not include any explanation or markdown wraps, just the raw JSON object.`;
 
@@ -982,7 +990,13 @@ export async function analyzeResume(resumeText, domain) {
           improvements: parsed.improvements || [],
           missingKeywords: parsed.missingKeywords || [],
           starCalibration: parsed.starCalibration || '',
-          recommendedQuestions: formattedQuestions
+          recommendedQuestions: formattedQuestions,
+          breakdown: parsed.breakdown || {
+            structure: 80,
+            impact: 60,
+            keywords: 70,
+            style: 75
+          }
         };
       }
     } catch (err) {
@@ -1126,17 +1140,42 @@ function generateMockResumeAnalysis(resumeText, domain) {
       recommendedQuestions: [
         { id: `rec-q-0-${Date.now()}`, question: "Can you introduce yourself and talk about your main engineering focus?", domain, difficulty: "Easy" },
         { id: `rec-q-1-${Date.now()}`, question: "What is your typical process when building a new software project?", domain, difficulty: "Medium" }
-      ]
+      ],
+      breakdown: {
+        structure: 10,
+        impact: 10,
+        keywords: 10,
+        style: 10
+      }
     };
   }
 
-  let score = 62;
-  if (textLength > 300) score += 5;
-  if (textLength > 800) score += 8;
-  if (textLength > 1500) score += 10;
-  
+  // --- MULTI-DIMENSIONAL ATS GRADING ENGINE Heuristics ---
   const lowercase = cleanText.toLowerCase();
-  
+
+  // 1. Structure Check (15%)
+  let structureScore = 0;
+  const sections = [
+    { keys: ['experience', 'work history', 'professional background'], score: 3 },
+    { keys: ['education', 'academic background', 'university', 'degree'], score: 3 },
+    { keys: ['project', 'accomplishment', 'key work'], score: 3 },
+    { keys: ['skill', 'expertise', 'technologies'], score: 3 },
+    { keys: ['contact', 'email', 'phone', 'linkedin', 'github'], score: 3 }
+  ];
+  sections.forEach(s => {
+    if (s.keys.some(k => lowercase.includes(k))) {
+      structureScore += s.score;
+    }
+  });
+
+  // 2. STAR Quantifiable Impact Check (30%)
+  let impactScore = 0;
+  // Matches percentages (%), numbers (>0), dollar signs ($), and common metrics keywords
+  const metricsMatches = (cleanText.match(/\b\d+(?:\.\d+)?%?\b|[\$£€]\d+|\b(?:reduced|increased|saved|grew|boosted|achieved|optimized|delivered|led to)\b/gi) || []).length;
+  impactScore = Math.min(30, metricsMatches * 3);
+
+  // 3. Keyword Match Density Check (35%)
+  let keywordsScore = 0;
   const domainKeywords = {
     'DSA': ['algorithm', 'complexity', 'array', 'tree', 'graph', 'hash', 'recursion', 'sorting', 'search', 'optimization'],
     'System Design': ['architecture', 'scalability', 'microservices', 'database', 'caching', 'load balancing', 'sharding', 'replica', 'latency'],
@@ -1159,48 +1198,114 @@ function generateMockResumeAnalysis(resumeText, domain) {
     'Data Engineering': ['spark', 'hadoop', 'kafka', 'etl', 'data pipeline', 'airflow', 'snowflake', 'big data'],
     'Full Stack': ['react', 'node.js', 'express', 'mongodb', 'typescript', 'api', 'frontend', 'backend']
   };
-
   const activeKeywords = domainKeywords[domain] || domainKeywords['DSA'];
-  const missing = [];
-  const found = [];
-
+  const foundKeywords = [];
+  const missingKeywords = [];
   activeKeywords.forEach(kw => {
     if (lowercase.includes(kw)) {
-      score += 1.5;
-      found.push(kw.charAt(0).toUpperCase() + kw.slice(1));
+      foundKeywords.push(kw.charAt(0).toUpperCase() + kw.slice(1));
     } else {
-      missing.push(kw.charAt(0).toUpperCase() + kw.slice(1));
+      missingKeywords.push(kw.charAt(0).toUpperCase() + kw.slice(1));
+    }
+  });
+  keywordsScore = Math.min(35, foundKeywords.length * 5);
+
+  // 4. Grammar, Tone & Style Check (20%)
+  let styleScore = 20; // Base score starts at 20, we deduct for grammar, capitalization, clichés
+  const corrections = [];
+
+  // Check for lowercase technical terms (Spelling & capitalization check)
+  const techTermsCheck = [
+    { lower: /\bjavascript\b/g, correct: 'JavaScript' },
+    { lower: /\breact\b/g, correct: 'React' },
+    { lower: /\bhtml\b/g, correct: 'HTML' },
+    { lower: /\bcss\b/g, correct: 'CSS' },
+    { lower: /\bnodejs\b/g, correct: 'Node.js' },
+    { lower: /\bgithub\b/g, correct: 'GitHub' }
+  ];
+  techTermsCheck.forEach(term => {
+    if (cleanText.match(term.lower)) {
+      styleScore -= 4;
+      corrections.push(`Capitalize technical terms properly: Change lowercase occurrences of '${term.lower.source.replace(/\\b/g, "")}' to '${term.correct}'.`);
     }
   });
 
-  score = Math.min(Math.round(score), 98);
+  // Check for mixed tenses in accomplishments (Past and Present mixed together)
+  const presentVerbs = cleanText.match(/\b(?:developing|building|managing|leading|optimizing|creating|implementing|writing)\b/gi) || [];
+  const pastVerbs = cleanText.match(/\b(?:developed|built|managed|led|optimized|created|implemented|wrote)\b/gi) || [];
+  if (presentVerbs.length > 0 && pastVerbs.length > 0) {
+    styleScore -= 4;
+    corrections.push("Avoid mixed tenses: Your bullet points mix present tenses (e.g. 'developing') and past tenses (e.g. 'developed') in the same roles. Keep past experience entirely in the past tense.");
+  }
+
+  // Check for passive or weak duties (clichés)
+  const passivePhrases = [
+    { term: /\bresponsible for\b/gi, suggestion: "'Spearheaded', 'Engineered', or 'Executed'" },
+    { term: /\bassisted with\b/gi, suggestion: "'Collaborated on' or 'Co-authored'" },
+    { term: /\bteam player\b/gi, suggestion: "'Led cross-functional collaboration' or 'Partnered with'" },
+    { term: /\bhelped\b/gi, suggestion: "'Facilitated' or 'Catalyzed'" }
+  ];
+  passivePhrases.forEach(p => {
+    if (cleanText.match(p.term)) {
+      styleScore -= 4;
+      corrections.push(`Avoid weak clichés/duty-based phrases: Replace '${p.term.source.replace(/\\b/g, "")}' with active power verbs like ${p.suggestion}.`);
+    }
+  });
+
+  // Check for non-capitalized bullet points / sentences
+  const lowercaseBullets = cleanText.match(/(?:^|\n)\s*-\s*[a-z]/g) || [];
+  if (lowercaseBullets.length > 0) {
+    styleScore -= 4;
+    corrections.push("Fix bullet point capitalization: Ensure every bullet point starts with a capitalized letter for standard readability.");
+  }
+
+  styleScore = Math.max(5, styleScore); // Minimum score of 5 for style
+
+  // Compute final overall ATS Score
+  // Normalized to be 0-100 scale: structure (out of 15), impact (out of 30), keywords (out of 35), style (out of 20)
+  const rawOverall = structureScore + impactScore + keywordsScore + styleScore;
+  const score = Math.min(Math.max(15, Math.round(rawOverall)), 99);
+
+  // Generate dynamic, extremely specific, actionable improvements
+  const improvements = [];
+  if (structureScore < 15) {
+    improvements.push("Structure & Formatting: Ensure all standard sections (e.g. 'Experience', 'Education', 'Projects', 'Skills') are explicitly labeled in the text.");
+  }
+  if (impactScore < 20) {
+    improvements.push("STAR Quantifiable Metrics: Integrate more numerical results (%, $, counts, or speedups) to prove the commercial and technical impact of your projects.");
+  }
+  if (keywordsScore < 25 && missingKeywords.length > 0) {
+    improvements.push(`Industry Keyword Density: Add core missing tools and platforms related to ${domain}: [${missingKeywords.slice(0, 5).join(', ')}] to successfully bypass automated ATS scanners.`);
+  }
+  
+  // Append precise grammar/style corrections
+  corrections.forEach(c => improvements.push(`Grammar & Style Check: ${c}`));
+
+  // Fallback improvements in case everything is highly rated but we want a perfect score
+  if (improvements.length === 0) {
+    improvements.push("Refine verb varieties: Avoid repeating the same action verbs (like 'Developed') multiple times; use synonyms like 'Spearheaded' or 'Engineered'.");
+    improvements.push("Incorporate specific tenses across your summary block to ensure consistency.");
+  }
 
   const strengths = [
-    `Clear display of matching concepts aligned to the ${domain} domain.`,
-    "Solid visual structure with descriptive details.",
+    `Strong Section Layout: Your profile exhibits clear indicators of standard structural coverage suitable for modern recruiting.`,
   ];
-  if (found.length > 3) {
-    strengths.push(`Strong vocabulary in key fields such as ${found.slice(0, 3).join(', ')}.`);
+  if (foundKeywords.length > 2) {
+    strengths.push(`Rich Keyword Vocabulary: Excellent usage of matching technical skills including: ${foundKeywords.slice(0, 3).join(', ')}.`);
+  }
+  if (impactScore >= 18) {
+    strengths.push("Result-Driven Metrics: Good start using quantified impact and concrete achievements inside your project descriptions.");
   } else {
-    strengths.push("Good organization of professional background details.");
+    strengths.push("Professional Formatting: Clean text capitalization and sentence boundaries.");
   }
 
-  const improvements = [
-    `Incorporate more quantitative metrics. Try to state specific percentages, numerical hours, or dollar amounts to validate your achievements.`,
-    `Integrate more industry standard keywords related to ${domain} (e.g. ${missing.slice(0, 2).join(', ')}) to successfully pass automated ATS scanners.`,
-  ];
-  if (lowercase.includes('responsibilities include') || lowercase.includes('responsible for')) {
-    improvements.push("Shift away from passive duty descriptions ('Responsible for writing tests') toward action-oriented result statements ('Implemented a Jest test suite, boosting code coverage to 92%').");
-  }
-
-  const starCalibration = lowercase.includes('result') || lowercase.includes('%') || lowercase.includes('optimized')
-    ? "Good start using result-driven vocabulary. You have quantified some impact! Continue refining by ensuring every project bullet point follows the exact 'Action -> Result' sequence."
-    : "Your bullets focus heavily on tasks and duties rather than results. Transform your bullet points to clearly highlight the Situation, Task, Action you took, and the quantifiable Result (e.g., speedups, user growth, or error reductions).";
+  const starCalibration = impactScore >= 20
+    ? "Excellent alignment with the STAR (Situation, Task, Action, Result) methodology. You have quantified several accomplishments. Continue expanding this by ensuring every single project bullet starts with a powerful action verb and ends with a specific numerical metric (e.g. speedups, users, or revenue)."
+    : "Your bullet points focus heavily on passive responsibilities and daily tasks rather than quantifiable results. Transform your experiences using the STAR method: describe what action you took, why you took it, and the precise numerical result (e.g. 'Optimized database queries, reducing latency by 45%').";
 
   const normDomain = MOCK_QUESTION_BANK[domain] ? domain : 'DSA';
   const questionsList = MOCK_QUESTION_BANK[normDomain]['Medium'];
   const shuffledQuestions = fisherYatesShuffle(questionsList).slice(0, 3);
-    
   const recommendedQuestions = shuffledQuestions.map((q, idx) => ({
     id: `rec-q-${idx}-${Date.now()}`,
     question: q,
@@ -1208,14 +1313,21 @@ function generateMockResumeAnalysis(resumeText, domain) {
     difficulty: "Medium"
   }));
 
+  // Return the complete analysis block including the breakdown percentages!
   return {
     score,
-    summary: `Your resume outlines a promising background for a ${domain} position. To elevate your application to a premium standard, enrich your work descriptions with metric-based outcomes and incorporate missing core keywords to pass modern recruiter filter algorithms. Focus on demonstrating measurable impact.`,
-    strengths,
-    improvements,
-    missingKeywords: missing.slice(0, 5),
+    summary: `Your resume outlines a promising candidate profile for a ${domain} target role. To elevate your credentials to premium standards, resolve the flagged grammar tenses and uncapitalized tech terms, replace weak passive clichés with powerful action verbs, and integrate more quantitative results to pass advanced ATS score checkers.`,
+    strengths: strengths.slice(0, 3),
+    improvements: improvements.slice(0, 4),
+    missingKeywords: missingKeywords.slice(0, 5),
     starCalibration,
-    recommendedQuestions
+    recommendedQuestions,
+    breakdown: {
+      structure: Math.round((structureScore / 15) * 100),
+      impact: Math.round((impactScore / 30) * 100),
+      keywords: Math.round((keywordsScore / 35) * 100),
+      style: Math.round((styleScore / 20) * 100)
+    }
   };
 }
 
