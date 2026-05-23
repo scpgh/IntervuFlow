@@ -151,22 +151,16 @@ export default function Landing() {
           </div>
 
           {/* Micro Trust Stats */}
-          <div className="flex items-center gap-6 pt-4 border-t border-brand-border/40 dark:border-brand-border/10 max-w-md">
-            <div className="flex -space-x-2">
-              <div className="h-8 w-8 rounded-full bg-brand-primary/30 border border-brand-primary flex items-center justify-center text-[10px] font-bold">JD</div>
-              <div className="h-8 w-8 rounded-full bg-brand-secondary/30 border border-brand-secondary flex items-center justify-center text-[10px] font-bold">AS</div>
-              <div className="h-8 w-8 rounded-full bg-indigo-500/30 border border-indigo-400 flex items-center justify-center text-[10px] font-bold">ML</div>
-            </div>
+          <div className="flex items-center gap-3 pt-4 border-t border-brand-border/40 dark:border-brand-border/10 max-w-md animate-fade-in">
             <div className="text-xs text-brand-textMutedLight dark:text-brand-textMuted">
               <div className="flex items-center gap-1 text-brand-primary font-bold dark:text-brand-secondary">
-                <Star className="h-3.5 w-3.5 fill-current" />
-                <Star className="h-3.5 w-3.5 fill-current" />
-                <Star className="h-3.5 w-3.5 fill-current" />
-                <Star className="h-3.5 w-3.5 fill-current" />
-                <Star className="h-3.5 w-3.5 fill-current" />
-                <span className="ml-1 text-brand-textMainLight dark:text-brand-textMain">4.9/5</span>
+                <Star className="h-4 w-4 fill-current text-brand-primary" />
+                <Star className="h-4 w-4 fill-current text-brand-primary" />
+                <Star className="h-4 w-4 fill-current text-brand-primary" />
+                <Star className="h-4 w-4 fill-current text-brand-primary" />
+                <Star className="h-4 w-4 fill-current text-brand-primary" />
+                <span className="ml-1.5 text-brand-textMainLight dark:text-brand-textMain font-bold text-sm">4.9 / 5 Candidate Evaluation Rating</span>
               </div>
-              <span>Trusted by 10,000+ candidates globally</span>
             </div>
           </div>
         </div>
@@ -258,21 +252,11 @@ export default function Landing() {
       {/* ─── Metrics Stats Bar ─── */}
       <section className="relative py-12 border-y border-brand-border/60 dark:border-brand-border/10 bg-brand-primary/5 dark:bg-brand-primary/5 backdrop-blur-sm z-10">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
             
             <div className="text-center space-y-1">
               <h3 className="text-3xl md:text-4xl font-extrabold text-brand-primary font-display">98.4%</h3>
               <p className="text-xs md:text-sm font-semibold text-brand-textMutedLight dark:text-brand-textMuted">ATS Accuracy Match</p>
-            </div>
-
-            <div className="text-center space-y-1">
-              <h3 className="text-3xl md:text-4xl font-extrabold text-brand-primary font-display">15,000+</h3>
-              <p className="text-xs md:text-sm font-semibold text-brand-textMutedLight dark:text-brand-textMuted">Mock Sessions Conducted</p>
-            </div>
-
-            <div className="text-center space-y-1">
-              <h3 className="text-3xl md:text-4xl font-extrabold text-brand-primary font-display">&lt; 0.4s</h3>
-              <p className="text-xs md:text-sm font-semibold text-brand-textMutedLight dark:text-brand-textMuted">Real-Time Evaluation</p>
             </div>
 
             <div className="text-center space-y-1">
@@ -381,7 +365,7 @@ export default function Landing() {
 
             {/* Sandbox scanner screen */}
             <div className="flex-1 w-full max-w-xl">
-              <div className="relative rounded-2xl border border-brand-border dark:border-brand-border/10 bg-black/40 backdrop-blur-md p-6 h-[380px] flex flex-col justify-between overflow-hidden">
+              <div className="relative rounded-2xl border border-brand-border dark:border-brand-border/10 bg-white/40 dark:bg-black/40 backdrop-blur-md p-6 h-[380px] flex flex-col justify-between overflow-hidden">
                 
                 {/* Visual scanner sweep lines during scan state */}
                 {playState === 'scanning' && <div className="scanner-line" />}
@@ -536,9 +520,9 @@ export default function Landing() {
           {steps.map((step, idx) => (
             <div 
               key={idx}
-              className="relative p-6 rounded-2xl border border-brand-border dark:border-brand-border/10 bg-transparent text-left space-y-4 hover:border-brand-primary/20 transition-all duration-300"
+              className="relative p-6 rounded-2xl luxury-glass-glow text-left space-y-4"
             >
-              <div className="text-4xl font-extrabold text-brand-primary/20 font-display">
+              <div className="text-4xl font-black text-brand-primary/80 dark:text-brand-secondary/60 font-display tracking-wider">
                 {step.num}
               </div>
               <h3 className="text-lg font-bold text-brand-textMainLight dark:text-brand-textMain">
