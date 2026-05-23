@@ -36,7 +36,7 @@ export default function Navbar() {
         {/* Brand Identity */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <svg 
-            className="h-8.5 w-8.5 text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 transform group-hover:scale-105" 
+            className="h-8 w-8 text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 transform group-hover:scale-105" 
             viewBox="0 0 24 24" 
             fill="none" 
             xmlns="http://www.w3.org/2000/svg"
@@ -94,9 +94,9 @@ export default function Navbar() {
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
             {isDark ? (
-              <Sun className="h-4.5 w-4.5 text-brand-accent animate-pulse-slow" />
+              <Sun className="h-5 w-5 text-brand-accent animate-pulse-slow" />
             ) : (
-              <Moon className="h-4.5 w-4.5 text-brand-primary" />
+              <Moon className="h-5 w-5 text-brand-primary" />
             )}
           </button>
 
@@ -134,7 +134,7 @@ export default function Navbar() {
                 className="flex items-center justify-center h-9 w-9 rounded-lg border border-brand-border text-brand-textMuted hover:text-brand-danger hover:border-brand-danger/30 hover:bg-brand-danger/10 transition-all"
                 title="Logout"
               >
-                <LogOut className="h-4.5 w-4.5" />
+                <LogOut className="h-5 w-5" />
               </button>
             </div>
           ) : (
@@ -165,7 +165,7 @@ export default function Navbar() {
         <div className="md:hidden w-full absolute top-[73px] left-0 right-0 glass-card border-b border-brand-border py-4 px-6 flex flex-col gap-4 animate-fade-in shadow-2xl">
           {isMock && (
             <div className="flex items-center gap-1.5 text-xs uppercase font-bold tracking-widest py-1.5 px-3 rounded-md bg-brand-accent/10 border border-brand-accent/20 text-brand-accent w-max">
-              <ShieldAlert className="h-4.5 w-4.5" />
+              <ShieldAlert className="h-5 w-5" />
               Developer Demo Mode
             </div>
           )}
@@ -210,7 +210,7 @@ export default function Navbar() {
                 {currentUser.email}
               </span>
             </div>
-            <User className="h-4.5 w-4.5 text-brand-textMuted" />
+            <User className="h-5 w-5 text-brand-textMuted" />
           </Link>
 
           <button
@@ -220,7 +220,7 @@ export default function Navbar() {
             }}
             className="flex items-center justify-center gap-2 text-sm font-bold text-brand-danger bg-brand-danger/10 border border-brand-danger/20 py-2.5 px-4 rounded-lg hover:bg-brand-danger/25 transition-all mt-1"
           >
-            <LogOut className="h-4.5 w-4.5" />
+            <LogOut className="h-5 w-5" />
             Logout Account
           </button>
         </div>
