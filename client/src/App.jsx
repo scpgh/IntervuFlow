@@ -18,6 +18,13 @@ import Analytics from './pages/Analytics';
 import Profile from './pages/Profile';
 import ResumeAnalysis from './pages/ResumeAnalysis';
 import ChatInterview from './pages/ChatInterview';
+import Landing from './pages/Landing';
+import { useAuth } from './context/AuthContext';
+
+function HomeRoute() {
+  const { currentUser } = useAuth();
+  return currentUser ? <Navigate to="/dashboard" replace /> : <Landing />;
+}
 
 export default function App() {
   return (
@@ -37,8 +44,9 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 
                 {/* Guarded Core Application Routes */}
+                <Route path="/" element={<HomeRoute />} />
                 <Route 
-                  path="/" 
+                  path="/dashboard" 
                   element={
                     <PrivateRoute>
                       <Dashboard />

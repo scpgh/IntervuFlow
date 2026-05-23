@@ -23,7 +23,7 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const navLinks = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Resume Analyzer', path: '/resume-analysis', icon: FileText },
     { name: 'Analytics', path: '/analytics', icon: BarChart2 },
     { name: 'Profile', path: '/profile', icon: User }

@@ -239,4 +239,42 @@
   .card-shine:hover::before {
     left: 120%;
   }
+
+  /* ─── Animated ATS Scanner Simulator ─── */
+  .scanner-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(90, 158, 111, 0.1), #5a9e6f, #6bb380, #5a9e6f, rgba(90, 158, 111, 0.1), transparent);
+    box-shadow: 0 0 16px rgba(90, 158, 111, 0.8), 0 0 4px rgba(90, 158, 111, 0.5);
+    animation: scannerSweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    z-index: 10;
+  }
+
+  @keyframes scannerSweep {
+    0% { top: 0%; opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* ─── Luxury Glow Card utility ─── */
+  .luxury-glass-glow {
+    background: rgba(12, 12, 14, 0.45);
+    border: 1px solid rgba(74, 124, 92, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .luxury-glass-glow:hover {
+    border-color: rgba(74, 124, 92, 0.3);
+    box-shadow: 0 20px 40px -15px rgba(74, 124, 92, 0.2),
+                0 0 15px 0 rgba(74, 124, 92, 0.1),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+    transform: translateY(-4px);
+  }
 }
+
