@@ -1153,14 +1153,15 @@ function generateMockResumeAnalysis(resumeText, domain) {
   // --- MULTI-DIMENSIONAL ATS GRADING ENGINE Heuristics ---
   const lowercase = cleanText.toLowerCase();
 
-  // 1. Structure Check (15%)
+  // 1. Structure & Contact Info Check (15%)
   let structureScore = 0;
+  const corrections = [];
+
   const sections = [
-    { keys: ['experience', 'work history', 'professional background'], score: 3 },
-    { keys: ['education', 'academic background', 'university', 'degree'], score: 3 },
-    { keys: ['project', 'accomplishment', 'key work'], score: 3 },
-    { keys: ['skill', 'expertise', 'technologies'], score: 3 },
-    { keys: ['contact', 'email', 'phone', 'linkedin', 'github'], score: 3 }
+    { keys: ['experience', 'work history', 'professional background'], label: 'Experience Section', score: 2.5 },
+    { keys: ['education', 'academic background', 'university', 'degree'], label: 'Education Section', score: 2.5 },
+    { keys: ['project', 'accomplishment', 'key work'], label: 'Projects Section', score: 2.5 },
+    { keys: ['skill', 'expertise', 'technologies'], label: 'Skills Section', score: 2.5 }
   ];
   sections.forEach(s => {
     if (s.keys.some(k => lowercase.includes(k))) {
@@ -1168,35 +1169,70 @@ function generateMockResumeAnalysis(resumeText, domain) {
     }
   });
 
+  // Verify contact details presence and format
+  const hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(cleanText);
+  const hasPhone = /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}/.test(cleanText);
+  
+  if (hasEmail) structureScore += 1.25;
+  else corrections.push("Missing email address: Ensure a valid professional email address is present in your contact details.");
+  
+  if (hasPhone) structureScore += 1.25;
+  else corrections.push("Missing phone number: Add a contact phone number so recruiters can easily contact you.");
+
+  // Verify professional links
+  const hasLinkedIn = /linkedin\.com/i.test(cleanText);
+  const hasGitHub = /github\.com/i.test(cleanText);
+  
+  if (hasLinkedIn) {
+    structureScore += 1.25;
+  } else {
+    corrections.push("Missing LinkedIn profile link: Include your public LinkedIn profile URL to build professional credibility.");
+  }
+  
+  const requiresGitHub = !['HR', 'Behavioural', 'Product Management', 'UI/UX Design'].includes(domain);
+  if (hasGitHub || !requiresGitHub) {
+    structureScore += 1.25;
+  } else {
+    corrections.push("Missing GitHub profile link: For engineering roles, include a link to your public repositories (e.g., GitHub) to showcase your projects.");
+  }
+
+  structureScore = Math.min(15, Math.max(2, structureScore));
+
   // 2. STAR Quantifiable Impact Check (30%)
   let impactScore = 0;
-  // Matches percentages (%), numbers (>0), dollar signs ($), and common metrics keywords
-  const metricsMatches = (cleanText.match(/\b\d+(?:\.\d+)?%?\b|[\$£€]\d+|\b(?:reduced|increased|saved|grew|boosted|achieved|optimized|delivered|led to)\b/gi) || []).length;
-  impactScore = Math.min(30, metricsMatches * 3);
+  // Precision check: match percentages (%), dollar signs ($), numbers combined with units/capacity, or scales (k, M, B)
+  // We EXCLUDE matches for standard calendar years (e.g. 2020-2029) and single list digit indices
+  const metricsMatches = (cleanText.match(/\b\d+(?:\.\d+)?%\b|[\$£€]\d+(?:\.\d+)?\b|\b\d+(?:\.\d+)?\s*(?:ms|sec|min|hr|hour|day|week|month|year)s?\b|\b\d+(?:\.\d+)?\s*[kKmMbB]\b|\b\d+(?:\.\d+)?\s*(?:user|candidate|client|server|container|transaction|query|request|line|page|percentage)s?\b/g) || []).length;
+  
+  // Also reward proximity of actions to numbers (excluding year numbers like 2020-2029)
+  const actionProximities = (lowercase.match(/\b(?:reduced|increased|saved|grew|boosted|achieved|optimized|delivered|led to)\b\s+(?:\w+\s+){0,4}\b(?!20\d\d)\d+\b/gi) || []).length;
+  
+  const totalMetricsPoints = (metricsMatches * 4) + (actionProximities * 5);
+  impactScore = Math.min(30, Math.max(0, totalMetricsPoints));
 
   // 3. Keyword Match Density Check (35%)
   let keywordsScore = 0;
   const domainKeywords = {
-    'DSA': ['algorithm', 'complexity', 'array', 'tree', 'graph', 'hash', 'recursion', 'sorting', 'search', 'optimization'],
-    'System Design': ['architecture', 'scalability', 'microservices', 'database', 'caching', 'load balancing', 'sharding', 'replica', 'latency'],
-    'Frontend': ['react', 'javascript', 'css', 'html', 'tailwind', 'typescript', 'webpack', 'dom', 'redux', 'responsive', 'performance'],
-    'Backend': ['node', 'express', 'database', 'sql', 'nosql', 'api', 'jwt', 'security', 'docker', 'redis', 'graphql', 'auth'],
-    'Behavioural': ['leadership', 'teamwork', 'deadline', 'conflict', 'collaboration', 'project', 'communication', 'ownership', 'star'],
-    'HR': ['alignment', 'values', 'growth', 'culture', 'motivation', 'achievement', 'strengths', 'learning', 'career'],
-    'Data Science': ['machine learning', 'python', 'pandas', 'scikit-learn', 'deep learning', 'nlp', 'statistics', 'modeling'],
-    'DevOps': ['ci/cd', 'docker', 'kubernetes', 'jenkins', 'terraform', 'aws', 'linux', 'automation'],
-    'Mobile Development': ['ios', 'android', 'react native', 'flutter', 'swift', 'kotlin', 'mobile', 'app'],
-    'Cybersecurity': ['security', 'penetration testing', 'firewall', 'encryption', 'vulnerability', 'owasp', 'network security'],
-    'Product Management': ['agile', 'roadmap', 'strategy', 'jira', 'user research', 'metrics', 'kpi', 'stakeholder'],
-    'UI/UX Design': ['figma', 'wireframe', 'prototyping', 'user experience', 'accessibility', 'usability', 'design system'],
-    'Database': ['sql', 'nosql', 'postgresql', 'mysql', 'mongodb', 'schema', 'query optimization', 'data modeling'],
-    'QA Testing': ['selenium', 'cypress', 'automation', 'testing', 'jest', 'bug tracking', 'regression', 'unit testing'],
-    'Blockchain': ['smart contracts', 'solidity', 'ethereum', 'web3', 'cryptography', 'defi', 'dapp'],
-    'AI/ML': ['tensorflow', 'pytorch', 'neural networks', 'computer vision', 'nlp', 'llm', 'generative ai'],
-    'Embedded Systems': ['c', 'c++', 'microcontroller', 'rtos', 'iot', 'hardware', 'firmware', 'spi', 'i2c'],
-    'Game Development': ['unity', 'unreal engine', 'c#', 'c++', '3d', 'physics', 'rendering', 'gameplay'],
-    'Data Engineering': ['spark', 'hadoop', 'kafka', 'etl', 'data pipeline', 'airflow', 'snowflake', 'big data'],
-    'Full Stack': ['react', 'node.js', 'express', 'mongodb', 'typescript', 'api', 'frontend', 'backend']
+    'DSA': ['algorithm', 'complexity', 'array', 'tree', 'graph', 'hash', 'recursion', 'sorting', 'search', 'optimization', 'complexity analysis', 'big o', 'leetcode'],
+    'System Design': ['architecture', 'scalability', 'microservices', 'database', 'caching', 'load balancing', 'sharding', 'replica', 'latency', 'high availability', 'cap theorem', 'rate limiting'],
+    'Frontend': ['react', 'javascript', 'css', 'html', 'tailwind', 'typescript', 'webpack', 'dom', 'redux', 'responsive', 'performance', 'single page application', 'next.js', 'browser compatibility'],
+    'Backend': ['node', 'express', 'database', 'sql', 'nosql', 'api', 'jwt', 'security', 'docker', 'redis', 'graphql', 'auth', 'rest api', 'orm', 'concurrency'],
+    'Behavioural': ['leadership', 'teamwork', 'deadline', 'conflict', 'collaboration', 'project', 'communication', 'ownership', 'star', 'stakeholder', 'mentoring', 'negotiation'],
+    'HR': ['alignment', 'values', 'growth', 'culture', 'motivation', 'achievement', 'strengths', 'learning', 'career', 'hr', 'workplace', 'onboarding'],
+    'Data Science': ['machine learning', 'python', 'pandas', 'scikit-learn', 'deep learning', 'nlp', 'statistics', 'modeling', 'data analysis', 'regression', 'tensorflow', 'pytorch'],
+    'DevOps': ['ci/cd', 'docker', 'kubernetes', 'jenkins', 'terraform', 'aws', 'linux', 'automation', 'ansible', 'prometheus', 'grafana', 'cloud architecture'],
+    'Mobile Development': ['ios', 'android', 'react native', 'flutter', 'swift', 'kotlin', 'mobile', 'app', 'cocoapods', 'gradle', 'play store', 'app store'],
+    'Cybersecurity': ['security', 'penetration testing', 'firewall', 'encryption', 'vulnerability', 'owasp', 'network security', 'cybersecurity', 'cryptography', 'incident response', 'iam'],
+    'Product Management': ['agile', 'roadmap', 'strategy', 'jira', 'user research', 'metrics', 'kpi', 'stakeholder', 'product backlog', 'mvp', 'user stories', 'scrum'],
+    'UI/UX Design': ['figma', 'wireframe', 'prototyping', 'user experience', 'accessibility', 'usability', 'design system', 'user journey', 'mockups', 'typography', 'information architecture'],
+    'Database': ['sql', 'nosql', 'postgresql', 'mysql', 'mongodb', 'schema', 'query optimization', 'data modeling', 'indexing', 'transactions', 'normalization', 'acid'],
+    'QA Testing': ['selenium', 'cypress', 'automation', 'testing', 'jest', 'bug tracking', 'regression', 'unit testing', 'test cases', 'integration testing', 'postman', 'manual testing'],
+    'Blockchain': ['smart contracts', 'solidity', 'ethereum', 'web3', 'cryptography', 'defi', 'dapp', 'tokenomics', 'ipfs', 'hyperledger', 'consensus'],
+    'AI/ML': ['tensorflow', 'pytorch', 'neural networks', 'computer vision', 'nlp', 'llm', 'generative ai', 'transformers', 'gpt', 'model training', 'quantization'],
+    'Embedded Systems': ['c', 'c++', 'microcontroller', 'rtos', 'iot', 'hardware', 'firmware', 'spi', 'i2c', 'uart', 'gpio', 'bare-metal'],
+    'Game Development': ['unity', 'unreal engine', 'c#', 'c++', '3d', 'physics', 'rendering', 'gameplay', 'shaders', 'game loop', 'collision detection'],
+    'Data Engineering': ['spark', 'hadoop', 'kafka', 'etl', 'data pipeline', 'airflow', 'snowflake', 'big data', 'data warehousing', 'data lake', 'spark sql'],
+    'Full Stack': ['react', 'node.js', 'express', 'mongodb', 'typescript', 'api', 'frontend', 'backend', 'full stack', 'html5', 'restful api', 'state management']
   };
   const activeKeywords = domainKeywords[domain] || domainKeywords['DSA'];
   const foundKeywords = [];
@@ -1208,11 +1244,10 @@ function generateMockResumeAnalysis(resumeText, domain) {
       missingKeywords.push(kw.charAt(0).toUpperCase() + kw.slice(1));
     }
   });
-  keywordsScore = Math.min(35, foundKeywords.length * 5);
+  keywordsScore = Math.min(35, foundKeywords.length * 4);
 
   // 4. Grammar, Tone & Style Check (20%)
-  let styleScore = 20; // Base score starts at 20, we deduct for grammar, capitalization, clichés
-  const corrections = [];
+  let styleScore = 20; // Base score starts at 20
 
   // Check for lowercase technical terms (Spelling & capitalization check)
   const techTermsCheck = [
@@ -1225,17 +1260,26 @@ function generateMockResumeAnalysis(resumeText, domain) {
   ];
   techTermsCheck.forEach(term => {
     if (cleanText.match(term.lower)) {
-      styleScore -= 4;
+      styleScore -= 3;
       corrections.push(`Capitalize technical terms properly: Change lowercase occurrences of '${term.lower.source.replace(/\\b/g, "")}' to '${term.correct}'.`);
     }
   });
 
-  // Check for mixed tenses in accomplishments (Past and Present mixed together)
-  const presentVerbs = cleanText.match(/\b(?:developing|building|managing|leading|optimizing|creating|implementing|writing)\b/gi) || [];
-  const pastVerbs = cleanText.match(/\b(?:developed|built|managed|led|optimized|created|implemented|wrote)\b/gi) || [];
-  if (presentVerbs.length > 0 && pastVerbs.length > 0) {
+  // Mixed Tenses Check (Line-by-line / sentence-by-sentence instead of full text)
+  const lines = cleanText.split(/\n+/);
+  let mixedTenseLinesCount = 0;
+  lines.forEach(line => {
+    const trimLine = line.trim();
+    if (!trimLine) return;
+    const linePresent = trimLine.match(/\b(?:developing|building|managing|leading|optimizing|creating|implementing|writing|designing|testing|deploying)\b/i) || [];
+    const linePast = trimLine.match(/\b(?:developed|built|managed|led|optimized|created|implemented|wrote|designed|tested|deployed)\b/i) || [];
+    if (linePresent.length > 0 && linePast.length > 0) {
+      mixedTenseLinesCount++;
+    }
+  });
+  if (mixedTenseLinesCount > 0) {
     styleScore -= 4;
-    corrections.push("Avoid mixed tenses: Your bullet points mix present tenses (e.g. 'developing') and past tenses (e.g. 'developed') in the same roles. Keep past experience entirely in the past tense.");
+    corrections.push(`Avoid mixed tenses in the same bullet: Found ${mixedTenseLinesCount} bullet(s) where present verbs (e.g. 'developing') and past verbs (e.g. 'developed') are mixed in the same sentence. Keep descriptions grammatically consistent.`);
   }
 
   // Check for passive or weak duties (clichés)
@@ -1247,7 +1291,7 @@ function generateMockResumeAnalysis(resumeText, domain) {
   ];
   passivePhrases.forEach(p => {
     if (cleanText.match(p.term)) {
-      styleScore -= 4;
+      styleScore -= 3;
       corrections.push(`Avoid weak clichés/duty-based phrases: Replace '${p.term.source.replace(/\\b/g, "")}' with active power verbs like ${p.suggestion}.`);
     }
   });
@@ -1255,36 +1299,34 @@ function generateMockResumeAnalysis(resumeText, domain) {
   // Check for non-capitalized bullet points / sentences
   const lowercaseBullets = cleanText.match(/(?:^|\n)\s*-\s*[a-z]/g) || [];
   if (lowercaseBullets.length > 0) {
-    styleScore -= 4;
+    styleScore -= 3;
     corrections.push("Fix bullet point capitalization: Ensure every bullet point starts with a capitalized letter for standard readability.");
   }
 
-  styleScore = Math.max(5, styleScore); // Minimum score of 5 for style
+  styleScore = Math.max(4, styleScore); // Minimum score of 4 for style
 
   // Compute final overall ATS Score
-  // Normalized to be 0-100 scale: structure (out of 15), impact (out of 30), keywords (out of 35), style (out of 20)
   const rawOverall = structureScore + impactScore + keywordsScore + styleScore;
   const score = Math.min(Math.max(15, Math.round(rawOverall)), 99);
 
   // Generate dynamic, extremely specific, actionable improvements
   const improvements = [];
-  if (structureScore < 15) {
-    improvements.push("Structure & Formatting: Ensure all standard sections (e.g. 'Experience', 'Education', 'Projects', 'Skills') are explicitly labeled in the text.");
+  if (structureScore < 12) {
+    improvements.push("Structure & Formatting: Ensure standard core sections (e.g., 'Projects', 'Skills', 'Education') are explicitly labeled in your headers.");
   }
   if (impactScore < 20) {
-    improvements.push("STAR Quantifiable Metrics: Integrate more numerical results (%, $, counts, or speedups) to prove the commercial and technical impact of your projects.");
+    improvements.push("STAR Quantifiable Metrics: Integrate more numerical results (%, $, counts, or time metrics) to prove the quantifiable impact of your projects.");
   }
   if (keywordsScore < 25 && missingKeywords.length > 0) {
-    improvements.push(`Industry Keyword Density: Add core missing tools and platforms related to ${domain}: [${missingKeywords.slice(0, 5).join(', ')}] to successfully bypass automated ATS scanners.`);
+    improvements.push(`Industry Keyword Density: Add core missing terms related to ${domain}: [${missingKeywords.slice(0, 5).join(', ')}] to successfully bypass automated ATS scanners.`);
   }
   
   // Append precise grammar/style corrections
-  corrections.forEach(c => improvements.push(`Grammar & Style Check: ${c}`));
+  corrections.slice(0, 3).forEach(c => improvements.push(`Grammar & Style: ${c}`));
 
   // Fallback improvements in case everything is highly rated but we want a perfect score
   if (improvements.length === 0) {
     improvements.push("Refine verb varieties: Avoid repeating the same action verbs (like 'Developed') multiple times; use synonyms like 'Spearheaded' or 'Engineered'.");
-    improvements.push("Incorporate specific tenses across your summary block to ensure consistency.");
   }
 
   const strengths = [
