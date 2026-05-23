@@ -105,7 +105,7 @@ export default function Landing() {
   ];
 
   return (
-    <div className="relative w-full overflow-hidden bg-brand-bgLight dark:bg-brand-bg transition-colors duration-300">
+    <div className="relative w-full overflow-hidden bg-transparent transition-colors duration-300">
       
       {/* Decorative Blur Overlays */}
       <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] rounded-full bg-brand-primary/10 dark:bg-brand-primary/5 blur-[120px] pointer-events-none" />

@@ -31,7 +31,7 @@ export default function App() {
     <ThemeProvider>
       <Router>
         <AuthProvider>
-          <div className="relative min-h-screen bg-brand-bgLight dark:bg-brand-bg text-brand-textMainLight dark:text-brand-textMain flex flex-col transition-colors duration-300">
+          <div className="relative min-h-screen bg-transparent text-brand-textMainLight dark:text-brand-textMain flex flex-col transition-colors duration-300">
             
             {/* Main Navigation Header */}
             <Navbar />
