@@ -1,13 +1,10 @@
 import express from 'express';
 import multer from 'multer';
-import { createRequire } from 'module';
 import mammoth from 'mammoth';
+import { getDocumentProxy, extractText } from 'unpdf';
 import { db } from '../services/firebase.service.js';
 import { verifyAuthToken } from '../middleware/auth.js';
 import { analyzeResume } from '../services/gemini.service.js';
-
-const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
 
 const router = express.Router();
 
@@ -31,8 +28,9 @@ router.post('/extract-text', verifyAuthToken, upload.single('file'), async (req,
     let extractedText = '';
 
     if (extension === 'pdf') {
-      const data = await pdfParse(buffer);
-      extractedText = data.text;
+      const pdf = await getDocumentProxy(new Uint8Array(buffer));
+      const { text } = await extractText(pdf, { mergePages: true });
+      extractedText = text;
     } else if (extension === 'docx') {
       const result = await mammoth.extractRawText({ buffer });
       extractedText = result.value;

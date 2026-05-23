@@ -34,10 +34,29 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Identity */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-brand-primary to-brand-secondary flex items-center justify-center shadow-glow-primary group-hover:scale-105 transition-all border border-white/10">
-            <span className="text-white font-display font-bold text-lg leading-none pt-0.5 tracking-tighter">IF</span>
-          </div>
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <svg 
+            className="h-8.5 w-8.5 text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 transform group-hover:scale-105" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M4 12C4 7.58172 7.58172 4 12 4C14.5 4 16.5 5.5 18 7.5M20 12C20 16.4183 16.4183 20 12 20C9.5 20 7.5 18.5 6 16.5" 
+              stroke="currentColor" 
+              strokeWidth="2.5" 
+              strokeLinecap="round" 
+            />
+            <path 
+              d="M12 8C14.2091 8 16 9.79086 16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8Z" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              fill="currentColor" 
+              fillOpacity="0.15" 
+            />
+            <circle cx="12" cy="12" r="2" fill="currentColor" />
+          </svg>
           <span className="text-xl font-extrabold font-display tracking-tight text-brand-textMain">
             Intervu<span className="text-brand-primary">Flow</span>
           </span>
