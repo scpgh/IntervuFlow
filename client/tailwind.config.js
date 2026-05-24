@@ -9,22 +9,22 @@ export default {
     extend: {
       colors: {
         brand: {
-          bg: '#090908',               // Gallery-black background
-          bgLight: '#fbfaf7',          // Warm porcelain light background
+          bg: '#0a0a0a',               // Pitch-black background
+          bgLight: '#fafafa',          // Clean warm-white light background
           card: 'var(--color-bg-card)', // Dynamic glass card fill
           cardLight: 'rgba(255, 255, 255, 0.95)', // Glass light card fallback
           border: 'var(--color-border)', // Dynamic border
           borderHover: 'var(--color-border-hover)', // Dynamic border hover
           borderLight: 'rgba(0, 0, 0, 0.06)',
-          primary: '#d9b76f',          // Champagne gold
-          primaryHover: '#c49d4b',     // Deeper gold
-          secondary: '#8ee8cf',        // Soft mint highlight
-          accent: '#a78bfa',           // Velvet violet accent
+          primary: '#4a7c5c',          // Muted sage green
+          primaryHover: '#3d6b50',     // Darker sage
+          secondary: '#5a9e6f',        // Lighter sage
+          accent: '#f59e0b',           // Amber Orange (Warning)
           danger: '#ef4444',           // Coral Red (Critical)
           textMain: 'var(--color-text-main)', // Dynamic text main
-          textMainLight: '#15120d',    // Deep warm ink text
+          textMainLight: '#0f172a',    // Deep slate text
           textMuted: 'var(--color-text-muted)', // Dynamic text muted
-          textMutedLight: '#615b50',   // Muted warm grey text
+          textMutedLight: '#4b5563',   // Muted grey text
         }
       },
       fontFamily: {
@@ -32,8 +32,8 @@ export default {
         display: ['DM Serif Display', 'Georgia', 'serif'],
       },
       boxShadow: {
-        'glow-primary': '0 0 22px rgba(217, 183, 111, 0.22)',
-        'glow-secondary': '0 0 22px rgba(142, 232, 207, 0.16)',
+        'glow-primary': '0 0 15px rgba(74, 124, 92, 0.2)',
+        'glow-secondary': '0 0 15px rgba(90, 158, 111, 0.2)',
         'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.25)',
       },
       animation: {
@@ -63,8 +63,8 @@ export default {
           '100%': { backgroundPosition: '200% 0' },
         },
         glowPulse: {
-          '0%, 100%': { boxShadow: '0 0 8px rgba(217, 183, 111, 0.16)' },
-          '50%': { boxShadow: '0 0 24px rgba(217, 183, 111, 0.34)' },
+          '0%, 100%': { boxShadow: '0 0 8px rgba(74, 124, 92, 0.15)' },
+          '50%': { boxShadow: '0 0 20px rgba(74, 124, 92, 0.3)' },
         },
         scaleIn: {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
