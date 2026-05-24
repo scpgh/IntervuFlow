@@ -1,599 +1,329 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Sparkles, ArrowRight, ShieldCheck, Cpu, Play, CheckCircle, 
-  AlertTriangle, FileText, ChevronRight, MessageSquare, Terminal, 
-  HelpCircle, UserCheck, BarChart2, Star, ShieldAlert, Award
+import {
+  ArrowRight,
+  BarChart2,
+  ChevronRight,
+  FileText,
+  MessageSquare,
+  Play,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Terminal,
+  UserCheck,
+  Wand2
 } from 'lucide-react';
 
 export default function Landing() {
-  // Simulator State
-  const [playState, setPlayState] = useState('idle'); // idle | scanning | completed
+  const [playState, setPlayState] = useState('idle');
   const [progress, setProgress] = useState(0);
-  const [scanLog, setScanLog] = useState('');
+  const [scanLog, setScanLog] = useState('Ready to calibrate role, resume, and interview signals.');
 
   const logs = [
-    'Initializing advanced parsing engine...',
-    'Extracting raw PDF text modules...',
-    'Verifying structure & contact credentials...',
-    'Scanning bullets for quantifiable STAR metrics...',
-    'Analyzing verb tenses bullet-by-bullet...',
-    'Checking developer portfolio links (GitHub/LinkedIn)...',
-    'Generating granular ATS report indices...',
-    'Platform audit completed successfully!'
+    'Reading resume structure and role intent...',
+    'Scoring STAR evidence and measurable outcomes...',
+    'Checking portfolio, contact, and project credibility...',
+    'Building interview probes from candidate context...',
+    'Preparing precision feedback dashboard...',
+    'Interview readiness profile completed.'
   ];
 
   useEffect(() => {
     let timer;
-    let logIdx = 0;
     if (playState === 'scanning') {
       setProgress(0);
       setScanLog(logs[0]);
-      
-      // Update progress bar
+
       timer = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
             clearInterval(timer);
             setPlayState('completed');
+            setScanLog(logs[logs.length - 1]);
             return 100;
           }
-          const next = prev + 4;
-          
-          // Rotate scanning logs based on progress threshold
+
+          const next = prev + 5;
           const index = Math.min(Math.floor((next / 100) * logs.length), logs.length - 1);
           setScanLog(logs[index]);
-          
           return next;
         });
-      }, 100);
+      }, 110);
     }
+
     return () => clearInterval(timer);
   }, [playState]);
 
-  const handleStartScan = () => {
-    setPlayState('scanning');
-  };
-
-  const handleResetScan = () => {
-    setPlayState('idle');
-    setProgress(0);
-  };
-
   const features = [
     {
-      icon: Cpu,
-      title: "ATS Optimization Engine",
-      description: "Audits your resume using strict recruitment algorithms. Scans for real STAR metrics, bullet-by-bullet tense consistency, and checks for missing contact/portfolio details.",
-      color: "text-brand-primary"
+      icon: FileText,
+      title: 'Resume Signal Audit',
+      description: 'Detect weak bullets, missing proof, ATS issues, and role-fit gaps before recruiters ever see them.'
     },
     {
       icon: MessageSquare,
-      title: "Contextual AI Interview Rooms",
-      description: "Engage in highly realistic chat or voice simulations. Tailored dynamically for Software Engineering, Product Management, Sales, and Finance workflows.",
-      color: "text-brand-secondary"
+      title: 'Adaptive Interview Rooms',
+      description: 'Practice with context-aware follow-ups that respond to your resume, target role, and answer quality.'
     },
     {
       icon: BarChart2,
-      title: "Visual Performance Dashboards",
-      description: "Get immediate actionable feedback with visual scoring gauges, comprehensive analytical category charts, and concrete suggestions for grammar and structure.",
-      color: "text-brand-accent"
+      title: 'Executive Feedback View',
+      description: 'Review scores, improvement priorities, grammar flags, and interview patterns in one polished dashboard.'
     }
   ];
 
   const steps = [
-    {
-      num: "01",
-      title: "Upload & Audit",
-      description: "Drop your PDF or Word resume. Our engine analyzes tenses, STAR metrics, and technical formats, flagging visual issues immediately."
-    },
-    {
-      num: "02",
-      title: "Calibrate Target",
-      description: "Select your desired role (Tech, Product, Marketing) and fine-tune the grading strictness. Customize the session matching your real job target."
-    },
-    {
-      num: "03",
-      title: "Interactive Practice",
-      description: "Conducted by adaptive AI models. Respond via chat, and receive responsive, context-aware queries testing your deep expertise."
-    },
-    {
-      num: "04",
-      title: "Upgrade & Land",
-      description: "Inspect dynamic metrics charts, correct specific flagged issues, and download comprehensive guides to optimize your interview confidence."
-    }
+    ['01', 'Upload', 'Bring in your resume and target role.'],
+    ['02', 'Calibrate', 'Tune strictness, domain, and session format.'],
+    ['03', 'Practice', 'Answer realistic prompts with adaptive follow-ups.'],
+    ['04', 'Improve', 'Use focused feedback to refine your next attempt.']
   ];
 
-  return (
-    <div className="relative w-full overflow-hidden bg-transparent transition-colors duration-300">
-      
-      {/* Decorative Blur Overlays */}
-      <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] rounded-full bg-brand-primary/10 dark:bg-brand-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-brand-secondary/15 dark:bg-brand-secondary/5 blur-[150px] pointer-events-none" />
-      <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[35%] h-[35%] rounded-full bg-indigo-500/5 blur-[100px] pointer-events-none" />
+  const startScan = () => {
+    setPlayState('scanning');
+  };
 
-      {/* ─── Hero Section ─── */}
-      <section className="relative max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-24 md:pt-32 md:pb-36 flex flex-col lg:flex-row items-center gap-16">
-        <div className="flex-1 space-y-8 animate-slide-up text-left z-10">
-          
-          {/* Tagline Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-semibold tracking-wide uppercase select-none animate-pulse-slow">
-            <Sparkles className="h-4 w-4 text-brand-secondary" />
-            Next-Gen Recruitment Platform
+  const resetScan = () => {
+    setPlayState('idle');
+    setProgress(0);
+    setScanLog('Ready to calibrate role, resume, and interview signals.');
+  };
+
+  return (
+    <div className="relative w-full overflow-hidden bg-transparent">
+      <section className="relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-20 pt-16 md:px-12 lg:grid-cols-[0.9fr_1.1fr] lg:pt-20">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/40 to-transparent" />
+
+        <div className="relative z-10 space-y-8 text-left">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-primary/20 bg-black/5 px-4 py-2 text-sm font-bold text-brand-textMain shadow-glass backdrop-blur-xl dark:bg-white/5">
+            <Sparkles className="h-4 w-4 text-brand-primary" />
+            Premium AI interview preparation
           </div>
 
-          {/* Luxury Display Title */}
-          <h1 className="text-4xl md:text-6xl font-extrabold font-display leading-[1.1] tracking-tight text-brand-textMainLight dark:text-brand-textMain">
-            Master Your Next <br />
-            Career Opportunity with <br />
-            <span className="text-gradient-sage">IntervuFlow</span>
-          </h1>
+          <div className="space-y-6">
+            <h1 className="max-w-3xl font-display text-5xl font-bold leading-[0.95] text-brand-textMain md:text-7xl lg:text-8xl">
+              Interview readiness, crafted like a private career studio.
+            </h1>
+            <p className="max-w-2xl text-base leading-8 text-brand-textMuted md:text-lg">
+              IntervuFlow blends resume auditing, role-aware mock interviews, and performance analytics into a refined workspace for candidates who want sharper answers and stronger offers.
+            </p>
+          </div>
 
-          <p className="text-base md:text-lg text-brand-textMutedLight dark:text-brand-textMuted max-w-xl leading-relaxed">
-            Bridge the gap between your resume and the interview room. Upload your resume for strict, metric-calibrated ATS auditing, then practice live with context-aware AI interviewers.
-          </p>
-
-          {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
-            <Link 
-              to="/register" 
-              className="glow-btn-primary flex items-center justify-center gap-2 text-white font-bold py-3.5 px-8 rounded-xl w-full sm:w-auto text-sm transition-all"
-            >
-              Get Started for Free
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link to="/register" className="glow-btn-primary inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold">
+              Start your prep
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <a 
-              href="#services" 
-              className="flex items-center justify-center gap-2 border border-brand-border dark:border-brand-border/40 hover:border-brand-primary/30 hover:bg-brand-primary/5 bg-transparent text-brand-textMainLight dark:text-brand-textMain font-semibold py-3.5 px-8 rounded-xl w-full sm:w-auto text-sm transition-all"
-            >
-              Explore Capabilities
+            <a href="#services" className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border bg-black/5 px-7 py-3.5 text-sm font-bold text-brand-textMain transition-all hover:border-brand-primary/30 hover:bg-brand-primary/10 dark:bg-white/5">
+              View platform
+              <ChevronRight className="h-4 w-4" />
             </a>
           </div>
 
-          {/* Micro Trust Stats */}
-          <div className="flex items-center gap-3 pt-4 border-t border-brand-border/40 dark:border-brand-border/10 max-w-md animate-fade-in">
-            <div className="text-xs text-brand-textMutedLight dark:text-brand-textMuted">
-              <div className="flex items-center gap-1 text-brand-primary font-bold dark:text-brand-secondary">
-                <Star className="h-4 w-4 fill-current text-brand-primary" />
-                <Star className="h-4 w-4 fill-current text-brand-primary" />
-                <Star className="h-4 w-4 fill-current text-brand-primary" />
-                <Star className="h-4 w-4 fill-current text-brand-primary" />
-                <Star className="h-4 w-4 fill-current text-brand-primary" />
-                <span className="ml-1.5 text-brand-textMainLight dark:text-brand-textMain font-bold text-sm">4.9 / 5 Candidate Evaluation Rating</span>
+          <div className="grid max-w-xl grid-cols-3 gap-4 border-t border-brand-border pt-6">
+            {[
+              ['98%', 'ATS clarity'],
+              ['4.9', 'prep rating'],
+              ['24/7', 'AI practice']
+            ].map(([value, label]) => (
+              <div key={label}>
+                <div className="font-display text-3xl font-bold text-brand-primary">{value}</div>
+                <div className="mt-1 text-xs font-semibold text-brand-textMuted">{label}</div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Hero Preview Interactive Card */}
-        <div className="flex-1 w-full lg:max-w-xl animate-fade-in z-10">
-          <div className="luxury-glass-glow rounded-3xl p-6 md:p-8 relative border border-brand-border dark:border-brand-border/20 shadow-2xl animate-float">
-            
-            {/* Window controls */}
-            <div className="flex items-center justify-between border-b border-brand-border/50 dark:border-brand-border/15 pb-4 mb-6">
-              <div className="flex items-center gap-2">
-                <span className="h-3.5 w-3.5 rounded-full bg-brand-danger/30 border border-brand-danger/40 block" />
-                <span className="h-3.5 w-3.5 rounded-full bg-brand-accent/30 border border-brand-accent/40 block" />
-                <span className="h-3.5 w-3.5 rounded-full bg-brand-primary/30 border border-brand-primary/40 block" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-textMutedLight dark:text-brand-textMuted bg-brand-border/20 dark:bg-brand-bg/50 px-3 py-1 rounded-md border border-brand-border/40 dark:border-brand-border/10">
-                IntervuFlow Dashboard
-              </span>
-            </div>
-
-            {/* Simulated Workspace */}
-            <div className="space-y-6">
-              
-              {/* Active Session Header Mockup */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-brand-primary/5 border border-brand-primary/10">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-brand-primary/20 flex items-center justify-center text-brand-primary">
-                    <UserCheck className="h-5 w-5" />
-                  </div>
-                  <div className="text-left">
-                    <h4 className="text-sm font-bold text-brand-textMainLight dark:text-brand-textMain leading-tight">Software Engineer Interview</h4>
-                    <span className="text-[10px] text-brand-textMutedLight dark:text-brand-textMuted">Grade strictness: Extremely Strict</span>
-                  </div>
+        <div className="relative z-10">
+          <div className="rounded-[2rem] border border-brand-border/80 bg-black/80 p-4 shadow-2xl dark:bg-black/70">
+            <div className="rounded-[1.5rem] border border-white/10 bg-[#050505] p-5 md:p-7">
+              <div className="mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="h-3.5 w-3.5 rounded-full bg-brand-primary" />
+                  <span className="h-3.5 w-3.5 rounded-full bg-brand-secondary" />
+                  <span className="h-3.5 w-3.5 rounded-full bg-brand-accent" />
                 </div>
-                <span className="text-xs font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 animate-pulse-slow">
-                  Live Audit
+                <span className="rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold text-white/70">
+                  Live workspace
                 </span>
               </div>
 
-              {/* Progress and scores grid */}
-              <div className="grid grid-cols-2 gap-4">
-                
-                {/* Score gauge mockup */}
-                <div className="p-4 rounded-2xl border border-brand-border dark:border-brand-border/10 bg-transparent dark:bg-brand-bg/30 text-left">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand-textMutedLight dark:text-brand-textMuted">ATS Audit Index</span>
-                  <div className="flex items-baseline gap-1 mt-2">
-                    <span className="text-3xl font-black text-brand-primary font-display">89</span>
-                    <span className="text-xs text-brand-textMutedLight dark:text-brand-textMuted">/100</span>
-                  </div>
-                  <div className="w-full bg-brand-border/40 dark:bg-brand-border/10 h-1.5 rounded-full mt-3 overflow-hidden">
-                    <div className="bg-brand-primary h-full rounded-full" style={{ width: '89%' }} />
-                  </div>
+              <div className="grid gap-4 lg:grid-cols-[0.82fr_1.18fr]">
+                <div className="space-y-4">
+                  {[
+                    ['Resume Score', '92', ShieldCheck],
+                    ['Role Fit', 'Strong', UserCheck],
+                    ['Answer Clarity', '8.7', Wand2]
+                  ].map(([label, value, Icon]) => (
+                    <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+                      <div className="mb-5 flex items-center justify-between text-white">
+                        <span className="text-sm font-bold">{label}</span>
+                        <Icon className="h-5 w-5 text-brand-secondary" />
+                      </div>
+                      <div className="flex items-end gap-2">
+                        <span className="font-display text-4xl font-bold text-brand-primary">{value}</span>
+                        <span className="pb-1 text-xs font-semibold text-white/45">indexed</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
-                {/* Sub score mockup */}
-                <div className="p-4 rounded-2xl border border-brand-border dark:border-brand-border/10 bg-transparent dark:bg-brand-bg/30 text-left">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand-textMutedLight dark:text-brand-textMuted">STAR Metrics check</span>
-                  <div className="flex items-center gap-1.5 mt-2">
-                    <CheckCircle className="h-5 w-5 text-brand-primary" />
-                    <span className="text-sm font-bold text-brand-textMainLight dark:text-brand-textMain">Validated</span>
+                <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.08] via-brand-accent/10 to-brand-secondary/10 p-5">
+                  <div className="mb-5 flex items-start justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Candidate command center</h3>
+                      <p className="mt-1 text-sm text-white/45">Resume, interview, and analytics pipeline</p>
+                    </div>
+                    <Sparkles className="h-6 w-6 text-brand-primary" />
                   </div>
-                  <span className="text-[9px] text-brand-secondary font-semibold block mt-3">4 quantifiable keys found</span>
-                </div>
 
+                  <div className="rounded-[1.5rem] border border-white/10 bg-black/55 p-5">
+                    <div className="mb-5 rounded-2xl bg-gradient-to-br from-brand-primary/70 via-brand-accent/55 to-brand-secondary/70 p-4">
+                      <div className="rounded-xl bg-black/70 p-4">
+                        <div className="mb-4 flex items-center justify-between">
+                          <span className="text-xs font-bold text-white/60">Frontend Engineer</span>
+                          <span className="rounded-full bg-brand-primary px-3 py-1 text-xs font-bold text-black">Ready</span>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="h-2 rounded-full bg-white/60" />
+                          <div className="h-2 w-4/5 rounded-full bg-white/30" />
+                          <div className="h-2 w-2/3 rounded-full bg-white/20" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      {['ATS', 'STAR', 'Voice'].map((item) => (
+                        <div key={item} className="rounded-xl border border-white/10 bg-white/[0.04] p-3 text-center text-xs font-bold text-white/70">
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              {/* Tense check list mockup */}
-              <div className="p-4 rounded-2xl border border-brand-border dark:border-brand-border/10 bg-transparent dark:bg-brand-bg/30 space-y-3 text-left">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-textMutedLight dark:text-brand-textMuted">Grammatical Audits</span>
-                
-                <div className="flex items-start gap-2 text-xs">
-                  <AlertTriangle className="h-4 w-4 text-brand-accent shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold text-brand-textMainLight dark:text-brand-textMain">Mixed Tense Flagged</span>
-                    <p className="text-[10px] text-brand-textMutedLight dark:text-brand-textMuted leading-tight mt-0.5">
-                      Bullet 3 in Past Role uses present continuous <span className="text-brand-accent font-semibold underline">"architecting"</span>.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
             </div>
-
-          </div>
-        </div>
-
-      </section>
-
-      {/* ─── Metrics Stats Bar ─── */}
-      <section className="relative py-12 border-y border-brand-border/60 dark:border-brand-border/10 bg-brand-primary/5 dark:bg-brand-primary/5 backdrop-blur-sm z-10">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
-            
-            <div className="text-center space-y-1">
-              <h3 className="text-3xl md:text-4xl font-extrabold text-brand-primary font-display">98.4%</h3>
-              <p className="text-xs md:text-sm font-semibold text-brand-textMutedLight dark:text-brand-textMuted">ATS Accuracy Match</p>
-            </div>
-
-            <div className="text-center space-y-1">
-              <h3 className="text-3xl md:text-4xl font-extrabold text-brand-primary font-display">4.95 / 5</h3>
-              <p className="text-xs md:text-sm font-semibold text-brand-textMutedLight dark:text-brand-textMuted">Candidate Rating</p>
-            </div>
-
           </div>
         </div>
       </section>
 
-      {/* ─── Services Features Section ─── */}
-      <section id="services" className="relative max-w-7xl mx-auto px-6 md:px-12 py-24 z-10 scroll-mt-10">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-20">
-          <span className="text-xs font-bold uppercase tracking-widest text-brand-primary bg-brand-primary/10 px-3 py-1 rounded-full">
-            Key Features
-          </span>
-          <h2 className="text-3xl md:text-5xl font-extrabold font-display tracking-tight text-brand-textMainLight dark:text-brand-textMain">
-            Unified Audit and Practice Platform
-          </h2>
-          <p className="text-base text-brand-textMutedLight dark:text-brand-textMuted">
-            IntervuFlow combines advanced ATS compliance algorithms with highly adaptive AI interview rooms to deliver comprehensive evaluation insights.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {features.map((feature, idx) => {
+      <section className="border-y border-brand-border/70 bg-black/[0.03] py-8 backdrop-blur-sm dark:bg-white/[0.025]">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-6 md:grid-cols-3 md:px-12">
+          {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <div 
-                key={idx}
-                className="luxury-glass-glow rounded-2xl p-8 border border-brand-border dark:border-brand-border/10 flex flex-col text-left space-y-6 group cursor-pointer"
-              >
-                <div className={`h-12 w-12 rounded-xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center ${feature.color} transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-primary/20`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-                <div className="space-y-3 flex-1">
-                  <h3 className="text-lg font-bold text-brand-textMainLight dark:text-brand-textMain leading-tight">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-brand-textMutedLight dark:text-brand-textMuted leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary hover:text-brand-secondary transition-colors cursor-pointer select-none">
-                  Learn more <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-all" />
-                </div>
+              <div key={feature.title} className="luxury-glass-glow rounded-2xl p-6 text-left">
+                <Icon className="mb-5 h-7 w-7 text-brand-primary" />
+                <h3 className="text-xl font-bold text-brand-textMain">{feature.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-brand-textMuted">{feature.description}</p>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* ─── Interactive ATS Scanner Simulator Section ─── */}
-      <section id="playground" className="relative max-w-7xl mx-auto px-6 md:px-12 py-16 mb-16 z-10">
-        <div className="luxury-glass-glow rounded-3xl border border-brand-border dark:border-brand-border/15 p-8 md:p-12 relative overflow-hidden shadow-3xl">
-          
-          <div className="flex flex-col lg:flex-row items-center gap-12 relative z-20">
-            
-            {/* Description panel */}
-            <div className="flex-1 space-y-6 text-left">
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand-primary bg-brand-primary/10 border border-brand-primary/20 py-1 px-3 rounded-full animate-pulse-slow">
-                Interactive Playground
-              </span>
-              <h2 className="text-2xl md:text-4xl font-extrabold font-display tracking-tight text-brand-textMainLight dark:text-brand-textMain leading-snug">
-                Simulate Your First ATS Verification Check
-              </h2>
-              <p className="text-sm md:text-base text-brand-textMutedLight dark:text-brand-textMuted leading-relaxed">
-                Click below to launch our sandbox scanner. Watch the AI parse a test software engineering resume template, excluding generic years, validating bullet tenses, and scoring quantifiable results.
-              </p>
-              
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center gap-3 text-xs">
-                  <CheckCircle className="h-5 w-5 text-brand-primary shrink-0" />
-                  <span className="text-brand-textMainLight dark:text-brand-textMain font-semibold">Tense-by-tense grammar evaluation</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <CheckCircle className="h-5 w-5 text-brand-primary shrink-0" />
-                  <span className="text-brand-textMainLight dark:text-brand-textMain font-semibold">STAR metrics check (ignores generic years)</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <CheckCircle className="h-5 w-5 text-brand-primary shrink-0" />
-                  <span className="text-brand-textMainLight dark:text-brand-textMain font-semibold">Checks for complete email, phone, LinkedIn & GitHub profiles</span>
-                </div>
-              </div>
-
-              {playState === 'idle' && (
-                <button
-                  onClick={handleStartScan}
-                  className="glow-btn-primary flex items-center justify-center gap-2 text-white font-bold py-3.5 px-8 rounded-xl text-sm transition-all"
-                >
-                  Analyze Test Resume Template
-                  <Play className="h-4 w-4 fill-white" />
-                </button>
-              )}
-
-              {playState === 'completed' && (
-                <button
-                  onClick={handleResetScan}
-                  className="flex items-center justify-center gap-2 border border-brand-border dark:border-brand-border/40 hover:border-brand-danger/30 hover:bg-brand-danger/10 text-brand-textMainLight dark:text-brand-textMain font-bold py-3.5 px-8 rounded-xl text-sm transition-all"
-                >
-                  Reset Simulator Workspace
-                </button>
-              )}
-            </div>
-
-            {/* Sandbox scanner screen */}
-            <div className="flex-1 w-full max-w-xl">
-              <div className="relative rounded-2xl border border-brand-border dark:border-brand-border/10 bg-white/40 dark:bg-black/40 backdrop-blur-md p-6 h-[380px] flex flex-col justify-between overflow-hidden">
-                
-                {/* Visual scanner sweep lines during scan state */}
-                {playState === 'scanning' && <div className="scanner-line" />}
-
-                {/* Simulator State: Idle */}
-                {playState === 'idle' && (
-                  <div className="m-auto text-center space-y-4 max-w-xs animate-scale-in">
-                    <div className="h-16 w-16 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary mx-auto animate-bounce">
-                      <FileText className="h-8 w-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="text-sm font-bold text-brand-textMainLight dark:text-brand-textMain">test_resume_template.pdf</h4>
-                      <p className="text-xs text-brand-textMutedLight dark:text-brand-textMuted">Format: PDF document (14 KB)</p>
-                    </div>
-                    <p className="text-[11px] text-brand-textMutedLight dark:text-brand-textMuted italic leading-relaxed">
-                      "Preloaded Software Developer template containing some common metrics, calendar years, and grammatical tense discrepancies."
-                    </p>
-                  </div>
-                )}
-
-                {/* Simulator State: Scanning */}
-                {playState === 'scanning' && (
-                  <div className="w-full h-full flex flex-col justify-between py-4 text-left font-mono">
-                    
-                    {/* Shell-like scanner outputs */}
-                    <div className="space-y-2.5">
-                      <div className="flex items-center gap-2 text-xs text-brand-primary font-bold">
-                        <Terminal className="h-4 w-4" />
-                        <span>INTERVUFLOW SCAN TERMINAL v1.0</span>
-                      </div>
-                      
-                      <div className="w-full bg-brand-border/30 dark:bg-brand-border/15 h-2 rounded-full overflow-hidden">
-                        <div className="bg-brand-primary h-full transition-all duration-100" style={{ width: `${progress}%` }} />
-                      </div>
-                      <div className="flex justify-between text-[10px] text-brand-textMutedLight dark:text-brand-textMuted">
-                        <span>SCANNING PROGRESS</span>
-                        <span>{progress}%</span>
-                      </div>
-                    </div>
-
-                    {/* Active parser logging logs */}
-                    <div className="flex-1 flex flex-col justify-center text-xs space-y-2 text-brand-textMainLight dark:text-brand-textMain">
-                      <div className="py-2.5 px-3 rounded-lg bg-white/5 border border-white/10 text-left animate-pulse-slow">
-                        <span className="text-brand-primary font-semibold mr-1">&gt;</span>
-                        {scanLog}
-                      </div>
-                    </div>
-
-                    <span className="text-[10px] text-brand-textMutedLight dark:text-brand-textMuted uppercase tracking-wider text-right">
-                      analyzing STAR metrics bullet-by-bullet...
-                    </span>
-                  </div>
-                )}
-
-                {/* Simulator State: Completed */}
-                {playState === 'completed' && (
-                  <div className="w-full h-full flex flex-col justify-between text-left animate-scale-in">
-                    
-                    {/* Score Summary Banner */}
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-primary/10 border border-brand-primary/20">
-                      <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-brand-primary/20 flex items-center justify-center text-brand-primary">
-                          <Award className="h-4 w-4" />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-brand-textMainLight dark:text-brand-textMain leading-tight">ATS Audit Score</h4>
-                          <span className="text-[9px] text-brand-textMutedLight dark:text-brand-textMuted">Strict validation applied</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-baseline gap-0.5">
-                        <span className="text-2xl font-black text-brand-primary font-display leading-none">86</span>
-                        <span className="text-[10px] text-brand-textMutedLight dark:text-brand-textMuted font-bold">/100</span>
-                      </div>
-                    </div>
-
-                    {/* Detailed findings breakdown */}
-                    <div className="flex-1 overflow-y-auto my-3.5 pr-1 space-y-2.5 custom-scrollbar">
-                      
-                      {/* Metric Check result */}
-                      <div className="flex items-start gap-2.5 text-[11px] p-2 rounded-lg bg-white/5 border border-white/5">
-                        <CheckCircle className="h-4 w-4 text-brand-primary shrink-0 mt-0.5" />
-                        <div>
-                          <span className="font-semibold text-brand-textMainLight dark:text-brand-textMain">STAR Quantifiable Metrics (Validated)</span>
-                          <p className="text-[10px] text-brand-textMutedLight dark:text-brand-textMuted leading-tight mt-0.5">
-                            Identified real metrics ("increased query speeds by 30%"). Implicity ignored standard years ("2023").
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Tense Check error */}
-                      <div className="flex items-start gap-2.5 text-[11px] p-2 rounded-lg bg-brand-accent/5 border border-brand-accent/25">
-                        <AlertTriangle className="h-4 w-4 text-brand-accent shrink-0 mt-0.5" />
-                        <div>
-                          <span className="font-semibold text-brand-accent">Mixed Tenses Conflict (1 warning)</span>
-                          <p className="text-[10px] text-brand-textMutedLight dark:text-brand-textMuted leading-tight mt-0.5">
-                            In Past Role, bullet 3 uses present continuous <span className="font-bold underline">"deploying"</span> instead of past tense <span className="font-bold underline">"deployed"</span>.
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Portfolio Check result */}
-                      <div className="flex items-start gap-2.5 text-[11px] p-2 rounded-lg bg-white/5 border border-white/5">
-                        <CheckCircle className="h-4 w-4 text-brand-primary shrink-0 mt-0.5" />
-                        <div>
-                          <span className="font-semibold text-brand-textMainLight dark:text-brand-textMain">Contact Credentials (Validated)</span>
-                          <p className="text-[10px] text-brand-textMutedLight dark:text-brand-textMuted leading-tight mt-0.5">
-                            Successfully parsed candidate email, mobile, and premium GitHub repository links.
-                          </p>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    {/* CTA suggestion */}
-                    <div className="flex items-center justify-between border-t border-brand-border/40 dark:border-brand-border/10 pt-3">
-                      <span className="text-[9px] text-brand-textMutedLight dark:text-brand-textMuted font-mono">CODE: INTERVU_AUDIT_SUCCESS</span>
-                      <Link 
-                        to="/register" 
-                        className="inline-flex items-center gap-1 text-[10px] font-extrabold text-brand-primary hover:text-brand-secondary transition-colors"
-                      >
-                        Optimize Your Real Resume <ArrowRight className="h-3 w-3" />
-                      </Link>
-                    </div>
-
-                  </div>
-                )}
-
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─── Timeline / Roadmap Section ─── */}
-      <section className="relative max-w-7xl mx-auto px-6 md:px-12 py-20 z-10 border-t border-brand-border/40 dark:border-brand-border/10">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-20">
-          <span className="text-xs font-bold uppercase tracking-widest text-brand-primary bg-brand-primary/10 px-3 py-1 rounded-full">
-            Our Flow
+      <section id="services" className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-24 md:px-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="space-y-6 text-left">
+          <span className="inline-flex rounded-full border border-brand-primary/20 bg-brand-primary/10 px-4 py-2 text-xs font-bold uppercase text-brand-primary">
+            Interactive platform
           </span>
-          <h2 className="text-3xl md:text-5xl font-extrabold font-display tracking-tight text-brand-textMainLight dark:text-brand-textMain">
-            How IntervuFlow Accelerates You
+          <h2 className="font-display text-4xl font-bold leading-tight text-brand-textMain md:text-6xl">
+            A polished flow from resume proof to interview confidence.
           </h2>
-          <p className="text-base text-brand-textMutedLight dark:text-brand-textMuted">
-            A seamless cycle of auditing, target calibration, realistic practice, and precise metrics feedback.
+          <p className="max-w-xl text-base leading-8 text-brand-textMuted">
+            The experience is built around repeated practice: upload, calibrate, answer, review, and return sharper every time.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {steps.map((step, idx) => (
-            <div 
-              key={idx}
-              className="relative p-6 rounded-2xl luxury-glass-glow text-left space-y-4"
-            >
-              <div className="text-4xl font-black text-brand-primary/80 dark:text-brand-secondary/60 font-display tracking-wider">
-                {step.num}
+        <div className="luxury-glass-glow rounded-[2rem] p-6 md:p-8">
+          <div className="mb-6 flex items-center justify-between border-b border-brand-border pb-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-brand-primary/20 bg-brand-primary/10 text-brand-primary">
+                <Terminal className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-bold text-brand-textMainLight dark:text-brand-textMain">
-                {step.title}
-              </h3>
-              <p className="text-xs md:text-sm text-brand-textMutedLight dark:text-brand-textMuted leading-relaxed">
-                {step.description}
-              </p>
+              <div>
+                <h3 className="text-lg font-bold text-brand-textMain">Readiness scan</h3>
+                <p className="text-xs font-semibold text-brand-textMuted">Strict candidate evaluation</p>
+              </div>
+            </div>
+            <span className="font-display text-3xl font-bold text-brand-primary">{progress}%</span>
+          </div>
+
+          <div className="relative mb-6 h-2 overflow-hidden rounded-full bg-brand-border">
+            <div className="h-full rounded-full bg-gradient-to-r from-brand-primary via-brand-accent to-brand-secondary transition-all duration-150" style={{ width: `${progress}%` }} />
+          </div>
+
+          <div className="min-h-[150px] rounded-2xl border border-brand-border bg-black/5 p-5 font-mono text-sm leading-7 text-brand-textMain dark:bg-black/35">
+            <span className="text-brand-primary">&gt;</span> {scanLog}
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            {playState !== 'scanning' && playState !== 'completed' && (
+              <button onClick={startScan} className="glow-btn-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-bold">
+                Run sample scan
+                <Play className="h-4 w-4 fill-current" />
+              </button>
+            )}
+            {playState === 'completed' && (
+              <button onClick={resetScan} className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border px-6 py-3 text-sm font-bold text-brand-textMain transition-all hover:border-brand-primary/30 hover:bg-brand-primary/10">
+                Reset scan
+              </button>
+            )}
+            <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-border px-6 py-3 text-sm font-bold text-brand-textMain transition-all hover:border-brand-primary/30 hover:bg-brand-primary/10">
+              Analyze my resume
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-24 md:px-12">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          {steps.map(([num, title, text]) => (
+            <div key={num} className="border-t border-brand-border pt-6 text-left">
+              <div className="font-display text-4xl font-bold text-brand-primary/80">{num}</div>
+              <h3 className="mt-4 text-lg font-bold text-brand-textMain">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-brand-textMuted">{text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ─── Call-To-Action Banner ─── */}
-      <section className="relative max-w-7xl mx-auto px-6 md:px-12 py-16 z-10">
-        <div className="relative rounded-3xl overflow-hidden py-16 px-8 md:p-16 border border-brand-primary/20 text-center space-y-8 bg-gradient-to-r from-brand-primary/10 via-brand-secondary/5 to-brand-primary/15 shadow-2xl">
-          
-          <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/30 pointer-events-none" />
-
-          <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-            <h2 className="text-3xl md:text-5xl font-extrabold font-display tracking-tight text-brand-textMainLight dark:text-brand-textMain">
-              Ready to Upgrade Your Interview Performance?
-            </h2>
-            <p className="text-sm md:text-base text-brand-textMutedLight dark:text-brand-textMuted leading-relaxed max-w-lg mx-auto">
-              Unlock a strict ATS evaluator dashboard, identify hidden grammar conflicts, and gain the mock interview practice required to secure top role offers.
-            </p>
-            <div className="pt-2">
-              <Link 
-                to="/register" 
-                className="glow-btn-primary inline-flex items-center justify-center gap-2 text-white font-bold py-4 px-10 rounded-xl text-sm transition-all"
-              >
-                Create Your Account Now
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+      <section className="mx-auto max-w-7xl px-6 pb-16 md:px-12">
+        <div className="overflow-hidden rounded-[2rem] border border-brand-primary/20 bg-black px-6 py-14 text-center shadow-2xl dark:bg-black/70 md:px-12">
+          <div className="mx-auto mb-5 flex w-max items-center gap-1 text-brand-primary">
+            {[1, 2, 3, 4, 5].map((item) => (
+              <Star key={item} className="h-4 w-4 fill-current" />
+            ))}
           </div>
-
+          <h2 className="mx-auto max-w-3xl font-display text-4xl font-bold leading-tight text-white md:text-6xl">
+            Make every answer sound prepared, specific, and calm.
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/55 md:text-base">
+            Create an account to start a complete preparation loop with resume analysis, mock interviews, and performance feedback.
+          </p>
+          <Link to="/register" className="glow-btn-primary mt-8 inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold">
+            Build my interview plan
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
-      {/* ─── Luxury Footer ─── */}
-      <footer className="relative border-t border-brand-border/60 dark:border-brand-border/10 py-12 bg-black/20 z-10">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          
-          {/* Brand */}
-          <div className="flex items-center gap-2.5">
-            <svg className="h-6 w-6 text-brand-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 12C4 7.58172 7.58172 4 12 4C14.5 4 16.5 5.5 18 7.5M20 12C20 16.4183 16.4183 20 12 20C9.5 20 7.5 18.5 6 16.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="12" cy="12" r="2" fill="currentColor" />
-            </svg>
-            <span className="text-lg font-extrabold font-display text-brand-textMainLight dark:text-brand-textMain">
-              Intervu<span className="text-brand-primary">Flow</span>
-            </span>
+      <footer className="border-t border-brand-border py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-sm text-brand-textMuted md:flex-row md:px-12">
+          <div className="flex items-center gap-2 font-bold text-brand-textMain">
+            <Sparkles className="h-5 w-5 text-brand-primary" />
+            IntervuFlow
           </div>
-
-          {/* Links */}
-          <div className="flex items-center gap-8 text-xs text-brand-textMutedLight dark:text-brand-textMuted">
-            <a href="#services" className="hover:text-brand-primary transition-colors">Services</a>
-            <a href="#playground" className="hover:text-brand-primary transition-colors">ATS Scanner</a>
-            <a href="/login" className="hover:text-brand-primary transition-colors">Sign In</a>
-            <a href="/register" className="hover:text-brand-primary transition-colors">Get Started</a>
+          <div className="flex items-center gap-6">
+            <a href="#services" className="transition-colors hover:text-brand-primary">Platform</a>
+            <Link to="/login" className="transition-colors hover:text-brand-primary">Sign in</Link>
+            <Link to="/register" className="transition-colors hover:text-brand-primary">Get started</Link>
           </div>
-
-          {/* Copyright */}
-          <div className="text-xs text-brand-textMutedLight dark:text-brand-textMuted">
-            &copy; {new Date().getFullYear()} IntervuFlow. Designed for modern professionals.
-          </div>
-
+          <div>© {new Date().getFullYear()} IntervuFlow.</div>
         </div>
       </footer>
-
     </div>
   );
 }
